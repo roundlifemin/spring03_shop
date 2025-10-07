@@ -14,6 +14,15 @@ pipeline {
             url: 'https://github.com/roundlifemin/spring03_shop.git',
             credentialsId: 'github-username-password'
       }
+      
+      post {
+                success {
+                    echo 'Success Github에 배포 성공!'
+                }
+                failure {
+                    echo 'Fail Github에 배포 실패!'
+                }
+            }
     }
 
     stage('Build') {
@@ -23,7 +32,11 @@ pipeline {
       post {
         success {
           archiveArtifacts artifacts: 'build/libs/*.jar', fingerprint: true
+          echo 'Success Build!'
         }
+        failure {
+                    echo 'Fail Build!'
+                }
       }
     }
   }

@@ -11,7 +11,17 @@ pipeline {
             steps {
                 git branch: 'master',
                 url: 'https://github.com/roundlifemin/spring03_shop.git'
-            }           
+            }  
+            
+            post{
+				success {
+					echo 'Successfully Cloned Repository'					
+				}
+				
+				failure {
+					echo 'Fail Cloned Repository'
+				}
+			}         
         }
 
         stage('Build') {
@@ -23,6 +33,10 @@ pipeline {
             post {
 			 success {
 				archiveArtifacts 'build/libs/*.jar'
+				echo 'Success Build'
+			 }
+			 failure {
+				echo 'Fail Build'
 			 }
 		   }
         }

@@ -53,7 +53,7 @@ pipeline {
     stage('Build and Push Docker Image') {
             steps {                
                     withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                        sh """
+                         sh """
                             echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
                             docker buildx build --platform ${env.DOCKER_BUILD_PLATFORMS} -t ${env.DOCKER_IMAGE_NAME} --push .
                         """

@@ -6,28 +6,21 @@ pipeline {
             steps {
                 git branch: 'master',
                 url: 'https://github.com/roundlifemin/spring03_shop.git'
-            }
-            post {
-                success {
-                    echo 'Successfully cloned repository'
-                }
-                failure {
-                    echo 'Fail cloned repository'
-                }
-            }
-        }
-
-        stage('Test') {
-            steps {
-                echo '테스트 단계를 진행 중. 각 모듈을 검증합니다.'
-            }
+            }           
         }
 
         stage('Build') {
             steps {
-                sh 'npm install'
-                sh 'npm run build'
+                dir('backend') {
+                    sh "./gradlew ${env.GRADLE_TASK}"
+                }
             }
+            
+           post {
+			success {
+				archiveArtifacts 'target/*.jar'
+			}
+		   }
         }
 
         stage('Docker Clear') {

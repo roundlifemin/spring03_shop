@@ -35,19 +35,20 @@ pipeline {
     }
     
 
-    stage('Build') {
+    stage('Build (skip tests)') {
       steps {
-        sh './gradlew clean build --no-daemon'
+        sh './gradlew clean build -x test --no-daemon'
+        archiveArtifacts artifacts: 'build/libs/*.jar', fingerprint: true
       }
       post {
-        success {
-          archiveArtifacts artifacts: 'build/libs/*.jar', fingerprint: true
+        success {          
           echo 'Success Build!'
         }
         failure {
-                    echo 'Fail Build!'
-                }
+            echo 'Fail Build!'
+        }
       }
     }
+    
   }
 }

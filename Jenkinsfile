@@ -50,6 +50,13 @@ pipeline {
       }
     }
     
+     stage('Initialize Buildx Builder') {
+            steps {
+                sh 'docker run --rm --privileged multiarch/qemu-user-static --reset -p yes' // QEMU/Binfmt 설정
+                sh 'docker buildx create --use --name mybuilder' // 새 빌더 생성 및 사용 설정
+            }
+        }
+    
     stage('Build and Push Docker Image') {
             steps {                
                     withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {

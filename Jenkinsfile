@@ -52,11 +52,10 @@ pipeline {
     
      stage('Initialize Buildx Builder') {
             steps {              
+                // 빌더가 이미 존재할 경우 에러를 무시하기 위해 '|| true' 추가
+                sh 'docker buildx create --name mybuilder || true' 
                 
-                // 1. 빌더 생성 (오래된 Buildx 버전 호환)
-                sh 'docker buildx create --name mybuilder' 
-                
-                // 2. 생성된 빌더 사용
+                // 생성된 빌더 사용 설정
                 sh 'docker buildx use mybuilder' 
             }
         }

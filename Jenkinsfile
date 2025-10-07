@@ -32,7 +32,7 @@ pipeline {
             
             post {
 			 success {
-				archiveArtifacts 'build/libs/*.jar'
+				archiveArtifacts artifacts: 'build/libs/*.jar', fingerprint: true
 				echo 'Success Build'
 			 }
 			 failure {

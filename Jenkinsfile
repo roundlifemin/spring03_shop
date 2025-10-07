@@ -1,5 +1,10 @@
 pipeline {
-    agent any
+   agent any
+
+    environment {
+      // 안전한 기본값: 빌드가 목적이면 'build'로 설정
+      GRADLE_TASK = 'build'
+    }
 
     stages {
         stage('Checkout') {
@@ -10,15 +15,14 @@ pipeline {
         }
 
         stage('Build') {
-            steps {
-                dir('backend') {
+            steps {                
                     sh "./gradlew ${env.GRADLE_TASK}"
-                }
+                
             }
             
             post {
 			 success {
-				archiveArtifacts 'target/*.jar'
+				archiveArtifacts 'build/libs/*.jar'
 			 }
 		   }
         }

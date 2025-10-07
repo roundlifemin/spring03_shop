@@ -24,6 +24,16 @@ pipeline {
                 }
             }
     }
+    
+     stage('Prepare') {
+      steps {
+        // gradlew에 실행권한 부여
+        sh 'chmod +x ./gradlew'
+        // (옵션) 현재 파일 권한 확인
+        sh 'ls -l ./gradlew || true'
+      }
+    }
+    
 
     stage('Build') {
       steps {

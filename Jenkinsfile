@@ -12,7 +12,7 @@ pipeline {
         // 간단한 git 스텝: credentialsId에 Jenkins에 등록한 ID 사용
         git branch: 'master',
             url: 'https://github.com/roundlifemin/spring03_shop.git',
-            credentialsId: 'github-username-password'
+            credentialsId: 'github-credentials'
       }
       
       post {

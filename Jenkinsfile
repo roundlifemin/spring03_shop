@@ -51,14 +51,12 @@ pipeline {
     }
     
      stage('Initialize Buildx Builder') {
-            steps {
-                 // 1. QEMU 에뮬레이션 설정 (멀티 아키텍처 빌드 시 필수)
-                sh 'docker run --rm --privileged multiarch/qemu-user-static --reset -p yes' 
+            steps {              
                 
-                // 2. 빌더 생성 (오래된 Buildx 버전 호환)
+                // 1. 빌더 생성 (오래된 Buildx 버전 호환)
                 sh 'docker buildx create --name mybuilder' 
                 
-                // 3. 생성된 빌더 사용
+                // 2. 생성된 빌더 사용
                 sh 'docker buildx use mybuilder' 
             }
         }

@@ -4,6 +4,9 @@ pipeline {
   environment {
     // (선택) 추가 환경변수
     APP_NAME = 'spring03_shop'
+     DOCKER_BUILD_PLATFORMS = 'linux/amd64'
+    DOCKER_IMAGE_NAME = 'roundlifemin/spring03_shop:latest'
+    DEPLOY_SERVER = '13.125.126.120'
   }
 
   stages {
@@ -50,15 +53,7 @@ pipeline {
       }
     }
     
-     stage('Initialize Buildx Builder') {
-            steps {              
-                // 빌더가 이미 존재할 경우 에러를 무시하기 위해 '|| true' 추가
-                sh 'docker buildx create --name mybuilder || true' 
-                
-                // 생성된 빌더 사용 설정
-                sh 'docker buildx use mybuilder' 
-            }
-        }
+     
     
     stage('Build and Push Docker Image') {
         steps {
@@ -70,6 +65,22 @@ pipeline {
               }
           }
         }
+        
+        
+        stage('Deploy to Production') {
+      steps {
+        sshagent(['deploy-server']) {
+          sh """
+            ssh -o StrictHostKeyChecking=no ubuntu@\${DEPLOY_SERVER} '
+              docker pull \${DOCKER_IMAGE_NAME} &&
+              docker stop \${APP_NAME} || true &&
+              docker rm \${APP_NAME} || true &&
+              docker run -d --name \${APP_NAME} -p 8090:8090 \${DOCKER_IMAGE_NAME}
+            '
+          """
+        }
+      }
+    }
             
   }
 }

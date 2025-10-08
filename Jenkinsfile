@@ -69,7 +69,7 @@ pipeline {
         
         stage('Deploy to Production') {
       steps {
-        sshagent(['deploy-server']) {
+        sshagent(['deploy-backend-server-credentials']) {
           sh """
             ssh -o StrictHostKeyChecking=no ubuntu@\${DEPLOY_SERVER} '
               docker pull \${DOCKER_IMAGE_NAME} &&

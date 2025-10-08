@@ -4,9 +4,9 @@ pipeline {
   environment {
     // (선택) 추가 환경변수
      APP_NAME = 'spring03_shop'
-     //DOCKER_BUILD_PLATFORMS = 'linux/amd64'
-     //DOCKER_IMAGE_NAME = 'roundlifemin/spring03_shop:latest'
-     //DEPLOY_SERVER = '13.125.126.120'
+     DOCKER_BUILD_PLATFORMS = 'linux/amd64'
+     DOCKER_IMAGE_NAME = 'roundlifemin/spring03_shop:latest'
+     DEPLOY_SERVER = '13.125.126.120'
   }
 
   stages {
@@ -68,7 +68,7 @@ pipeline {
           }
         }
         
-        stage('Deploy to Production') {
+      stage('Deploy to Production') {
       steps {
         sshagent(['deploy-backend-server-credentials']) {
           sh """

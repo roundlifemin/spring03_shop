@@ -13,14 +13,14 @@ pipeline {
     stage('Checkout') {
       steps {
         // 간단한 git 스텝: credentialsId에 Jenkins에 등록한 ID 사용
-        /*git branch: 'master',
+           git branch: 'master',
             url: 'https://github.com/roundlifemin/spring03_shop.git',
-            credentialsId: 'github-credentials' */ 
-            checkout scm         
+            credentialsId: 'github-credentials'  
+                  
           
       }
       
-/*      post {
+     post {
                 success {
                     echo 'Success Github에 배포 성공!'
                 }
@@ -28,7 +28,7 @@ pipeline {
                     echo 'Fail Github에 배포 실패!'
                 }
             }
-*/    }
+    }
     
      stage('Prepare') {
       steps {

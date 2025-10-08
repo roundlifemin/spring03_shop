@@ -13,11 +13,10 @@ pipeline {
     stage('Checkout') {
       steps {
         // 간단한 git 스텝: credentialsId에 Jenkins에 등록한 ID 사용
-       /* git branch: 'master',
+        git branch: 'master',
             url: 'https://github.com/roundlifemin/spring03_shop.git',
-            credentialsId: 'github-credentials'*/
-            
-        checkout scm     
+            credentialsId: 'github-credentials'           
+          
       }
       
 /*      post {
@@ -69,20 +68,7 @@ pipeline {
         }
         
         
-     stage('Deploy to Production') {
-      steps {
-        sshagent(['deploy-backend-server-credentials']) {
-          sh """
-            ssh -o StrictHostKeyChecking=no ubuntu@\${DEPLOY_SERVER} '
-              docker pull \${DOCKER_IMAGE_NAME} &&
-              docker stop \${APP_NAME} || true &&
-              docker rm \${APP_NAME} || true &&
-              docker run -d --name \${APP_NAME} -p 8090:8090 \${DOCKER_IMAGE_NAME}
-            '
-          """
-        }
-      }
-    }
+    
             
   }
 }

@@ -12,27 +12,25 @@ pipeline {
   stages {
     stage('Checkout') {
       steps {
-        // 간단한 git 스텝: credentialsId에 Jenkins에 등록한 ID 사용
-           git branch: 'master',
-            url: 'https://github.com/roundlifemin/spring03_shop.git',
-            credentialsId: 'github-credentials'  
-                  
-          
+        // [수정] Jenkins Job 설정의 SCM 정보를 사용하여 코드를 가져오는 표준 명령어 사용
+        // Job 설정 (Configure)의 'Source Code Management' 섹션에 Git URL과 Credentials가 등록되어 있어야 합니다.
+        checkout scm
       }
       
      post {
                 success {
-                    echo 'Success Github에 배포 성공!'
+                    // 메시지를 'Checkout 성공'으로 수정하여 단계 목적을 명확히 함
+                    echo 'Success: 소스 코드 Checkout 성공!' 
                 }
                 failure {
-                    echo 'Fail Github에 배포 실패!'
+                    echo 'Fail: 소스 코드 Checkout 실패! (Git 설정 또는 권한 확인)'
                 }
             }
     }
     
      stage('Prepare') {
       steps {
-        // gradlew에 실행권한 부여
+        // [유지] gradlew에 실행권한 부여
         sh 'chmod +x ./gradlew'
         // (옵션) 현재 파일 권한 확인
         sh 'ls -l ./gradlew || true'
@@ -42,6 +40,7 @@ pipeline {
 
     stage('Build (skip tests)') {
       steps {
+        // [유지] 테스트를 건너뛰고 빌드
         sh './gradlew clean build -x test --no-daemon'
         archiveArtifacts artifacts: 'build/libs/*.jar', fingerprint: true
       }
@@ -62,6 +61,7 @@ pipeline {
           withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
            sh """
              echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+             # --platform 옵션과 태그를 사용하여 Docker 이미지 빌드 및 푸시
              docker buildx build --platform ${env.DOCKER_BUILD_PLATFORMS} -t ${env.DOCKER_IMAGE_NAME} --push .
             """
               }
@@ -70,9 +70,11 @@ pipeline {
         
       stage('Deploy to Production') {
       steps {
+        // SSH 프라이빗 키(deploy-backend-server-credentials)를 사용하여 원격 서버에 접속
         sshagent(['deploy-backend-server-credentials']) {
           sh """
             ssh -o StrictHostKeyChecking=no ubuntu@\${DEPLOY_SERVER} '
+              # 원격 서버에서 Docker 이미지 풀, 이전 컨테이너 정리 및 새 컨테이너 실행
               docker pull \${DOCKER_IMAGE_NAME} &&
               docker stop \${APP_NAME} || true &&
               docker rm \${APP_NAME} || true &&
@@ -82,7 +84,6 @@ pipeline {
         }
       }
     }
-    
             
   }
 }

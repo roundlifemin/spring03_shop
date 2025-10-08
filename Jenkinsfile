@@ -4,9 +4,9 @@ pipeline {
   environment {
     // (선택) 추가 환경변수
      APP_NAME = 'spring03_shop'
-     DOCKER_BUILD_PLATFORMS = 'linux/amd64'
-     DOCKER_IMAGE_NAME = 'roundlifemin/spring03_shop:latest'
-     DEPLOY_SERVER = '13.125.126.120'
+     //DOCKER_BUILD_PLATFORMS = 'linux/amd64'
+     //DOCKER_IMAGE_NAME = 'roundlifemin/spring03_shop:latest'
+     //DEPLOY_SERVER = '13.125.126.120'
   }
 
   stages {
@@ -68,7 +68,20 @@ pipeline {
         }
         
         
-    
+     stage('Deploy to Production') {
+      steps {
+        sshagent(['deploy-backend-server-credentials']) {
+          sh """
+            ssh -o StrictHostKeyChecking=no ubuntu@\${DEPLOY_SERVER} '
+              docker pull \${DOCKER_IMAGE_NAME} &&
+              docker stop \${APP_NAME} || true &&
+              docker rm \${APP_NAME} || true &&
+              docker run -d --name \${APP_NAME} -p 8090:8090 \${DOCKER_IMAGE_NAME}
+            '
+          """
+        }
+      }
+    }
             
   }
 }

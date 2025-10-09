@@ -12,9 +12,10 @@ pipeline {
   stages {
     stage('Checkout') {
       steps {
-        // [수정] Jenkins Job 설정의 SCM 정보를 사용하여 코드를 가져오는 표준 명령어 사용
-        // Job 설정 (Configure)의 'Source Code Management' 섹션에 Git URL과 Credentials가 등록되어 있어야 합니다.
-        checkout scm
+         // 간단한 git 스텝: credentialsId에 Jenkins에 등록한 ID 사용
+           git branch: 'master',
+            url: 'https://github.com/roundlifemin/spring03_shop.git',
+            credentialsId: 'github-credentials'            
       }
       
      post {
